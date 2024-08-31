@@ -1,0 +1,36 @@
+  void dfs(int i, vector<int> adj[], vector<int>& path, bool& flag) {
+        if (!flag) return;
+
+        path[i] = 1; // Mark the current node as part of the current path
+
+        for (int x : adj[i]) {
+            if (path[x] == 0) {
+                dfs(x, adj, path, flag);
+            } else if (path[x] == 1) {
+                flag = false;
+                return;
+            }
+        }
+
+        path[i] = 2; // Mark the node as fully visited
+    }
+
+    bool canFinish(int n, vector<vector<int>>& p) {
+        vector<int> adj[n];
+        for (auto& x : p) {
+            adj[x[0]].push_back(x[1]);
+        }
+
+        vector<int> path(n, 0); // 0: unvisited, 1: visiting, 2: visited
+        bool flag = true;
+
+        for (int i = 0; i < n; i++) {
+            if (path[i] == 0) {
+                dfs(i, adj, path, flag);
+                if (!flag) return false;
+            }
+        }
+
+        return true;
+    }
+};
