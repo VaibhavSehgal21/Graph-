@@ -1,0 +1,170 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+template <typename T>
+using v = vector<T>;
+
+bool dfs(int ind, stack<int> &s, vector<int> &vis, vector<vector<int>> &adj)
+{
+
+    vis[ind] = 1;
+
+    for (int i = 0; i < adj[ind].size(); i++)
+    {
+
+        int x = adj[ind][i];
+
+        if (!vis[x])
+        {
+           if( dfs(x, s,  vis,adj)){
+            return true;
+           }
+        }
+
+        else if(vis[x]==1){
+            return true;
+        }
+    }
+    
+    vis[ind]=2;
+    s.push(ind);
+    return false;
+}
+
+void solve_dfs()
+{
+
+    int n, m;
+
+    cin >> n >> m;
+
+    vector<vector<int>> adj(n + 1);
+    stack<int> s;
+
+    // bool isCycle=false;
+
+    for (int i = 0; i < m; i++)
+    {
+        int a, b;
+        cin >> a >> b;
+
+        adj[a].push_back(b);
+
+        // inorder[b]++;
+    }
+
+    vector<int> vis(n + 1, 0);
+    
+    for (int i = 1; i <= n; i++)
+    {
+        
+        if (!vis[i])
+        {
+           if( dfs(i, s,vis, adj)){
+                 
+                cout << "IMPOSSIBLE" << endl;
+                return;
+            
+           }
+
+            
+        }
+    }
+
+    vector<int> ans;
+
+    while (!s.empty())
+    {
+        ans.push_back(s.top());
+        s.pop();
+    }
+
+    if (ans.size() != n )
+    {
+        cout << "IMPOSSIBLE" << endl;
+        return;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        cout << ans[i] << " ";
+    }
+}
+
+void solve1_bfs()
+{
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> adj(n + 1);
+    vector<int> inorder(n + 1, 0);
+
+    for (int i = 0; i < m; i++)
+    {
+        int a, b;
+        cin >> a >> b;
+
+        adj[a].push_back(b);
+
+        inorder[b]++;
+    }
+
+    queue<int> q;
+
+    for (int i = 1; i <= n; i++)
+    {
+        if (inorder[i] == 0)
+        {
+            q.push(i);
+        }
+    }
+
+    vector<int> ans;
+
+    while (q.size())
+    {
+
+        auto x = q.front();
+        ans.push_back(x);
+        q.pop();
+
+        for (auto node : adj[x])
+        {
+
+            inorder[node]--;
+
+            if (inorder[node] == 0)
+            {
+                q.push(node);
+            }
+        }
+    }
+
+    if (n != ans.size())
+    {
+        cout << "IMPOSSIBLE";
+        return;
+    }
+
+    for (auto x : ans)
+    {
+        cout << x << " ";
+    }
+}
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    // int t;
+    // cin >> t;
+    // while (t--) {
+
+    // solve();
+
+    solve_dfs();
+    // }
+    return 0;
+}
