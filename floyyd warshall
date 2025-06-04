@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+template<typename T>
+using v = vector<T>;
+
+void solve() {
+   ll n,m,q;
+
+   cin>>n>>m>>q;
+    
+   vector<vector<ll>>dp(n+1,vector<ll>(n+1,LLONG_MAX));
+    
+   for(ll i=0;i<=n;i++){
+        adj[i][i]=0;
+   }
+
+
+   for(ll i=0;i<m;i++){
+     ll a,b,c;
+     cin>>a>>b>>c;
+
+      adj[a][b]=min(adj[a][b],c);
+      adj[b][a]=min(adj[b][a],c);
+
+   }
+
+   vector<vector<ll>> dp=adj;
+
+   for(ll k=1;k<=n;k++){
+    for(ll i=1;i<=n;i++){
+      for(ll j=1;j<=n;j++){
+
+        if(dp[i][k]<LLONG_MAX && dp[k][j]<LLONG_MAX)
+        dp[i][j]=min(dp[i][j],dp[i][k]+dp[k][j]);
+      }
+    }
+
+   }
+
+
+   for(ll i=0;i<q;i++){
+         
+    ll a,b;
+
+    cin>>a>>b;
+
+    if(dp[a][b]==LLONG_MAX){
+        cout<<-1<<endl;
+    }
+
+    else{
+        cout<<dp[a][b]<<endl;
+    }
+
+   }
+
+
+}
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(NULL);
+    // ll t;
+    // cin >> t;
+    // while (t--) {
+        solve();
+    // }
+    return 0;
+}
