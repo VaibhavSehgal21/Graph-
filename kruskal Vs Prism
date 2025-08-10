@@ -1,0 +1,149 @@
+// Kruskal algo Using DSU and sorting  & Prism algo Using  adj list,vis vector  and heap ;
+
+
+class DSU{
+  
+  public :
+  vector<int> rank;
+  vector<int> parent ;
+  
+  DSU(int n){
+      
+      rank.resize(n+1,1);
+      parent.resize(n+1,1);
+      
+      for(int i=0;i<=n;i++){
+          parent[i]=i;
+      }
+      
+  }    
+  
+  
+  int find(int u){
+      
+      if(parent[u]==u){
+          return u;
+      }
+      
+      return parent[u]=find(parent[u]);
+  }
+  
+  
+  bool unite(int  u ,int v){
+      
+      
+      int ult_u=find(u);
+      int ult_v=find(v);
+      
+      if(ult_u==ult_v){
+          return false;
+      }
+     
+     
+     if(rank[ult_u]==rank[ult_v]){
+         rank[ult_u]++;
+         
+         parent[ult_v]=ult_u;
+     }
+     
+     
+     else if(rank[ult_u]>rank[ult_v]){
+           parent[ult_v]=ult_u;
+     }
+     
+     else{
+         parent[ult_u]=ult_v; 
+     }
+     
+     
+     return true; 
+  }
+
+    
+};
+
+
+
+int Solution::solve(int A, vector<vector<int> > &B) {
+    
+    // Using Kruskal Algo (DSU approach)
+    
+    DSU ds(A+1);
+    
+    vector<vector<int>> edges;
+    
+    for(auto & x:B){
+        edges.push_back({x[2],x[0],x[1]});
+    }
+    
+    sort(edges.begin(),edges.end());
+    
+    int sum=0;
+    
+    for(auto &x : edges)
+    {
+        
+      if(ds.find(x[1])==ds.find(x[2])){
+          continue;
+      }
+      
+      else{
+          sum+=x[0];
+          ds.unite(x[1],x[2]);
+      }  
+        
+        
+    }
+    
+    return sum;
+}
+
+
+
+// Prism ALgo 
+
+
+
+
+   vector<vector<pair<int,int>>> adj(A+1);
+    
+    for(auto  x : B){
+        
+        adj[x[0]].push_back({x[1],x[2]});
+        adj[x[1]].push_back({x[0],x[2]});
+        
+    }
+    
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> q;
+    
+    int sum=0;
+    
+    q.push({0,1});
+    vector<int> vis(A+1,0);
+    
+    while(q.size()){
+        
+        
+        auto [wt,node]=q.top();
+        q.pop();
+        if(vis[node]) continue;
+        
+        sum+=wt;
+        vis[node]=1;
+        
+        for(auto &x :adj[node]){
+            
+            if(vis[x.first]) continue;
+            
+            q.push({x.second,x.first});
+            
+        }
+        
+                
+        
+    }
+    
+    
+    
+    
+    return sum;
